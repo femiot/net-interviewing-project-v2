@@ -1,0 +1,1 @@
+﻿dotnet ef migrations add InitialCatalog --project src/Insurance.Infrastructure --startup-project src/Insurance.Api --context InsuranceContext -o 'MigrationData'
