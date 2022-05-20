@@ -29,7 +29,7 @@ namespace Insurance.Api.Middlewares
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
                 if (env.IsDevelopment())
-                    await context.Response.WriteAsync(ex.Message);
+                    await context.Response.WriteAsync(ex.ToString());
                 else
                     await context.Response.WriteAsync("An error occurred please try again");
             }

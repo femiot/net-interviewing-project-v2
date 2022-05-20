@@ -27,9 +27,10 @@ namespace Insurance.Api.Controllers
         }
 
         [HttpPost("products")]
-        public async Task<List<InsuranceResponse>> CalculateInsurance([FromBody] List<InsuranceRequest> payload)
+        public async Task<InsuranceProductsResponse> CalculateInsurance([FromBody] List<InsuranceRequest> payload)
         {
-            return await _calculatorService.CalculateProductsInsuranceValueAsync(productIds: payload.Select(x => x.ProductId).ToArray());
+            var value = await _calculatorService.CalculateProductsInsuranceValueAsync(productIds: payload.Select(x => x.ProductId).ToArray());
+            return new InsuranceProductsResponse { InsuranceTotalValue = value };
         }
     }
 }

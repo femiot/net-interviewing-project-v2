@@ -2,6 +2,7 @@ using Dawn;
 using Insurance.Core.Interfaces;
 using Insurance.Shared.Constants;
 using Insurance.Shared.Payload.Requests;
+using Insurance.Shared.Payload.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -21,11 +22,11 @@ namespace Insurance.Api.Controllers
         }
 
         [HttpPost("UploadSurchargeRates")]
-        public async Task<IActionResult> UploadSurchargeRates([FromForm] SurchargeUploadRequest payload)
+        public async Task<SurchargeUploadResponse> UploadSurchargeRates([FromForm] SurchargeUploadRequest payload)
         {
             _contextAccessor.HttpContext.Request.Headers.Add(HeaderConstants.CurrentUserId, payload.UserId.ToString());
-            var uploaded = await _surchargeService.CaptureRates(payload.SurchargeFile);
-            return Ok(uploaded);
+            var uploaded = await _surchargeService.CaptureRatesAsync(payload.BuildSurchageRateFromFile());
+            return new SurchargeUploadResponse { SuccessfullyUploaded = uploaded };
         }
     }
 }

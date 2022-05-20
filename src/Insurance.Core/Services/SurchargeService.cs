@@ -1,7 +1,9 @@
 ﻿using Dawn;
 using Insurance.Core.Interfaces;
+using Insurance.Shared.Constants;
 using Insurance.Shared.DTOs;
 using Insurance.Shared.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -11,29 +13,35 @@ namespace Insurance.Core.Services
     {
         private readonly ILogger<SurchargeService> _logger;
         private readonly IInsuranceUnitOfWork _insuranceUnitOfWork;
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IGenericRepository<ProductTypeSurchargeCost> _productTypeSurchargeCostRepository;
-        public SurchargeService(ILogger<SurchargeService> logger, IInsuranceUnitOfWork insuranceUnitOfWork)
+        public SurchargeService(ILogger<SurchargeService> logger, IInsuranceUnitOfWork insuranceUnitOfWork, IHttpContextAccessor contextAccessor)
         {
             _logger = Guard.Argument(logger, nameof(logger)).NotNull().Value;
             _insuranceUnitOfWork = Guard.Argument(insuranceUnitOfWork, nameof(insuranceUnitOfWork)).NotNull().Value;
             _productTypeSurchargeCostRepository = _insuranceUnitOfWork.Repository<ProductTypeSurchargeCost>();
+            _contextAccessor = Guard.Argument(contextAccessor, nameof(contextAccessor)).NotNull().Value;
         }
 
-        public async Task<bool> CaptureRatesAsync(List<SurchargeRateDto> surchargeRateDtos)
+        public async Task<bool> CaptureRatesAsync(IEnumerable<SurchargeRateDto> surchargeRateDtos)
         {
+            Guard.Argument(surchargeRateDtos, nameof(surchargeRateDtos)).NotNull();
+
+            _contextAccessor.HttpContext.Request.Headers.TryGetValue(HeaderConstants.CurrentUserId, out var userId);
+
             foreach (SurchargeRateDto surchargeRateDto in surchargeRateDtos)
             {
                 var existingRate = await _productTypeSurchargeCostRepository.FirstOrDefaultAsync(x => x.Id == surchargeRateDto.ProductTypeId);
                 if (existingRate != null)
                 {
-                    _logger.LogInformation($"Updating surcharge rate for Product Type Id {surchargeRateDto.ProductTypeId} - Rate {surchargeRateDto.SurchargeRate}");
+                    _logger.LogInformation($"User with ID {userId} Updating surcharge rate for Product Type Id {surchargeRateDto.ProductTypeId} - Rate {surchargeRateDto.SurchargeRate}");
                     existingRate.Rate = surchargeRateDto.SurchargeRate;
                     _productTypeSurchargeCostRepository.Update(existingRate);
                     await _insuranceUnitOfWork.SaveAsync();
                 }
                 else
                 {
-                    _logger.LogInformation($"Adding surcharge rate for Product Type Id {surchargeRateDto.ProductTypeId} - Rate {surchargeRateDto.SurchargeRate}");
+                    _logger.LogInformation($"User with ID {userId} Adding surcharge rate for Product Type Id {surchargeRateDto.ProductTypeId} - Rate {surchargeRateDto.SurchargeRate}");
                     var newSurchargeRate = new ProductTypeSurchargeCost
                     {
                         Rate = surchargeRateDto.SurchargeRate,
