@@ -14,6 +14,9 @@ namespace Insurance.Shared.Validators
 
         public bool BeValidFile(IFormFile surchargeFile)
         {
+            if(surchargeFile == null)
+                return false;
+
             var fileExtension = Path.GetExtension(surchargeFile.FileName);
 
             if (fileExtension != ".csv")

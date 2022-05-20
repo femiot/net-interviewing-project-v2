@@ -19,6 +19,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Globalization;
 
 namespace Insurance.Api
 {
@@ -85,6 +86,12 @@ namespace Insurance.Api
                     }
                 });
             });
+
+            var cultureInfo = new CultureInfo("nl-NL");
+            cultureInfo.NumberFormat.CurrencySymbol = "€";
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

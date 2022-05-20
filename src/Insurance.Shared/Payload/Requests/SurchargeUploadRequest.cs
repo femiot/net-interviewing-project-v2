@@ -1,5 +1,6 @@
 ﻿using Insurance.Shared.DTOs;
 using Microsoft.AspNetCore.Http;
+using System.Globalization;
 
 namespace Insurance.Shared.Payload.Requests
 {
@@ -25,7 +26,7 @@ namespace Insurance.Shared.Payload.Requests
                         if (columns[0].Trim() == nameof(SurchargeRateDto.ProductTypeId) && columns[1].Trim() == nameof(SurchargeRateDto.SurchargeRate))
                             continue;
 
-                        if (int.TryParse(columns[0].Trim(), out var productTypeId) && float.TryParse(columns[1].Trim(), out var surchargeRate))
+                        if (int.TryParse(columns[0].Trim(), out var productTypeId) && float.TryParse(columns[1].Trim(), NumberStyles.Any, new CultureInfo("nl-NL"), out var surchargeRate))
                             SurchargeRateDtoList.Add(new SurchargeRateDto { ProductTypeId = productTypeId, SurchargeRate = surchargeRate });
                         else
                             throw new Exception($"Unable to capture surcharge rates file. Method {nameof(BuildSurchageRateFromFile)}");
