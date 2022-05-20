@@ -15,7 +15,7 @@ namespace Insurance.Tests.Helpers
             _context.Database.EnsureCreated();
         }
 
-        public void SeedToDoItems()
+        public void SeedDatabase()
         {
             _context.CostRangeRules.Add(new CostRangeRule
             {

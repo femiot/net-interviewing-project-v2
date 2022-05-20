@@ -1,6 +1,5 @@
 ﻿using Insurance.Api;
 using Insurance.Infrastructure.EF;
-using Insurance.Shared.AppSettings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -46,13 +45,7 @@ namespace Insurance.Tests.Helpers
                         context =>
                         {
                             int productId = int.Parse((string)context.Request.RouteValues["id"]);
-                            var product = new
-                            {
-                                id = productId,
-                                name = "Test Product",
-                                productTypeId = 1,
-                                salesPrice = 750
-                            };
+                            var product = ProductApiMockData.GetProductById(productId);
                             return context.Response.WriteAsync(JsonSerializer.Serialize(product));
                         }
                     );
@@ -61,40 +54,23 @@ namespace Insurance.Tests.Helpers
                        context =>
                        {
                            int productTypeId = int.Parse((string)context.Request.RouteValues["id"]);
-                           var productType = new
-                           {
-                               id = productTypeId,
-                               name = "Test type",
-                               canBeInsured = true
-                           };
+                           var productType = ProductApiMockData.GetProductTypeById(productTypeId);
                            return context.Response.WriteAsync(JsonSerializer.Serialize(productType));
+                       }
+                   );
+                    ep.MapGet(
+                       "products",
+                       context =>
+                       {
+                           var products = ProductApiMockData.GetProducts();
+                           return context.Response.WriteAsync(JsonSerializer.Serialize(products));
                        }
                    );
                     ep.MapGet(
                         "product_types",
                         context =>
                         {
-                            var productTypes = new[]
-                                               {
-                                                   new
-                                                   {
-                                                       id = 1,
-                                                       name = "Test type",
-                                                       canBeInsured = true
-                                                   },
-                                                   new
-                                                   {
-                                                       id = 2,
-                                                       name = "Test type2",
-                                                       canBeInsured = true
-                                                   },
-                                                   new
-                                                   {
-                                                       id = 3,
-                                                       name = "Test type3",
-                                                       canBeInsured = false
-                                                   }
-                                               };
+                            var productTypes = ProductApiMockData.GetProductTypes();
                             return context.Response.WriteAsync(JsonSerializer.Serialize(productTypes));
                         }
                     );
@@ -106,8 +82,8 @@ namespace Insurance.Tests.Helpers
         {
             base.Configure(app, env, serviceProvider);
             using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            var seeder = serviceScope.ServiceProvider.GetService<TestDataInitializer>();
-            seeder.SeedToDoItems();
+            var initializer = serviceScope.ServiceProvider.GetService<TestDataInitializer>();
+            initializer.SeedDatabase();
         }
     }
 
