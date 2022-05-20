@@ -43,6 +43,8 @@ namespace Insurance.Api
 
             services.AddHttpContextAccessor();
 
+            services.AddMemoryCache();
+
             services.AddScoped<ICalculatorService, CalculatorService>();
             services.AddScoped<ISurchargeService, SurchargeService>();
 
@@ -55,9 +57,7 @@ namespace Insurance.Api
             services.Configure<AppConfiguration>(options => Configuration.GetSection(nameof(AppConfiguration)).Bind(options));
 
             var databaseConnectionString = Configuration.GetConnectionString("database");
-
             services.AddDbContext<InsuranceContext>(options => options.UseSqlite(databaseConnectionString));
-
             services.AddHealthChecks().AddSqlite(databaseConnectionString);
 
             services.AddHttpClient(IntegrationConstants.ProductDataApi, httpClient =>
@@ -109,8 +109,8 @@ namespace Insurance.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/alive");
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/health");
             });
 
             try

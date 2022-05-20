@@ -3,6 +3,8 @@ using Insurance.Core.Interfaces;
 using Insurance.Shared.Payload.Requests;
 using Insurance.Shared.Payload.Responses;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Insurance.Api.Controllers
@@ -22,6 +24,12 @@ namespace Insurance.Api.Controllers
         {
             var value = await _calculatorService.CalculateProductInsuranceValueAsync(productId: payload.ProductId);
             return new InsuranceResponse { ProductId = payload.ProductId, InsuranceValue = value };
+        }
+
+        [HttpPost("products")]
+        public async Task<List<InsuranceResponse>> CalculateInsurance([FromBody] List<InsuranceRequest> payload)
+        {
+            return await _calculatorService.CalculateProductsInsuranceValueAsync(productIds: payload.Select(x => x.ProductId).ToArray());
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Insurance.Shared.Payload.Requests;
-using Microsoft.AspNetCore.Http;
 
 namespace Insurance.Shared.Validators
 {
@@ -9,16 +8,21 @@ namespace Insurance.Shared.Validators
         public SurchargeUploadRequestValidator()
         {
             RuleFor(x => x.UserId).NotEmpty().WithMessage("Please provide User Id");
-            RuleFor(x => x.SurchargeFile).Must(x => BeValidFile(x)).WithMessage("Please upload a valid csv file (1 GB size max)");
+            RuleFor(x => x).NotNull().Must(x => BeValidFile(x)).OverridePropertyName(x => x.SurchargeFile).WithMessage("Please upload a valid csv file (1 GB size max)");
         }
 
-        public bool BeValidFile(IFormFile surchargeFile)
+        public bool BeValidFile(SurchargeUploadRequest surchargeUploadRequest)
         {
-            var fileExtension = Path.GetExtension(surchargeFile.FileName);
+            var fileExtension = Path.GetExtension(surchargeUploadRequest.SurchargeFile.FileName);
+
             if (fileExtension != ".csv")
                 return false;
 
-            if (surchargeFile.Length > 1048576000)
+            if (surchargeUploadRequest.SurchargeFile.Length <= 0
+                    || surchargeUploadRequest.SurchargeFile.Length > 1048576000)
+                return false;
+
+            if (surchargeUploadRequest.BuildSurchageRateFromFile() == null)
                 return false;
 
             return true;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -22,6 +23,12 @@ namespace Insurance.Api.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            if (!context.ModelState.IsValid)
+            {
+                context.Result = new BadRequestObjectResult(context.ModelState);
+                _logger.LogWarning($"RequestFilter: {context.ActionDescriptor.DisplayName} Execution not processed due to bad request");
+            }
+
             _logger.LogInformation($"RequestFilter: {context.ActionDescriptor.DisplayName} Execution started");
         }
     }

@@ -1,11 +1,10 @@
-using System;
-using Insurance.Api.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
+using System;
+using System.Text.Json;
 using Xunit;
 
 namespace Insurance.Tests
@@ -78,7 +77,7 @@ namespace Insurance.Tests
                                               productTypeId = 1,
                                               salesPrice = 750
                                           };
-                            return context.Response.WriteAsync(JsonConvert.SerializeObject(product));
+                            return context.Response.WriteAsync(JsonSerializer.Serialize(product));
                         }
                     );
                     ep.MapGet(
@@ -94,7 +93,7 @@ namespace Insurance.Tests
                                                        canBeInsured = true
                                                    }
                                                };
-                            return context.Response.WriteAsync(JsonConvert.SerializeObject(productTypes));
+                            return context.Response.WriteAsync(JsonSerializer.Serialize(productTypes));
                         }
                     );
                 }

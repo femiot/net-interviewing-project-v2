@@ -46,7 +46,8 @@ namespace MicroFinanceSystem.Infrastructure.UnitOfWork
         }
 
         public async Task SaveAsync()
-        {            
+        {
+            _insuranceContext.ChangeTracker.TrackEntityDataChanges(_contextAccessor);
             await _insuranceContext.SaveChangesAsync();
         }
 

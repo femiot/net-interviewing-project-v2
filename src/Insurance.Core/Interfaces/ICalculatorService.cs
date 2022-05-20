@@ -3,5 +3,6 @@
     public interface ICalculatorService
     {
         Task<float> CalculateProductInsuranceValueAsync(int productId);
+        Task<float> CalculateProductsInsuranceValueAsync(int[] productIds);
     }
 }

@@ -21,7 +21,7 @@ namespace Insurance.Api.Controllers
         }
 
         [HttpPost("UploadSurchargeRates")]
-        public async Task<IActionResult> UploadSurchargeRates([FromBody] SurchargeUploadRequest payload)
+        public async Task<IActionResult> UploadSurchargeRates([FromForm] SurchargeUploadRequest payload)
         {
             _contextAccessor.HttpContext.Request.Headers.Add(HeaderConstants.CurrentUserId, payload.UserId.ToString());
             var uploaded = await _surchargeService.CaptureRates(payload.SurchargeFile);

@@ -36,9 +36,9 @@ namespace Insurance.Infrastructure.Repositories
             return _dbSet.FirstOrDefault(predicate);
         }
 
-        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<IEnumerable<TEntity>?> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(predicate);
+            return await Task.Run(() => _dbSet.AsNoTracking().Where(predicate));
         }
 
         public async Task<List<TEntity>> GetListAsync()

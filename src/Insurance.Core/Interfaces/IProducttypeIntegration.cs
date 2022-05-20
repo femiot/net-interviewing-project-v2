@@ -5,5 +5,6 @@ namespace Insurance.Core.Interfaces
     public interface IProductTypeIntegration
     {
         Task<ProductTypeIntegrationDto?> GetProductTypeByIdAsync(int productTypeId);
+        Task<List<ProductTypeIntegrationDto>?> GetAllProductTypesAsync();
     }
 }

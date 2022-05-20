@@ -9,7 +9,7 @@ namespace Insurance.Core.Interfaces
         TEntity? FirstOrDefault();
         Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
         TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate);
-        Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>?> FindAsync(Expression<Func<TEntity, bool>> predicate);
         Task<List<TEntity>> GetListAsync();
         IQueryable<TEntity> AsQueryable();
         IQueryable<TEntity> Include(string[] properties);

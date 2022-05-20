@@ -3,6 +3,7 @@ using Insurance.Core.Interfaces;
 using Insurance.Shared.DTOs;
 using Insurance.Shared.Entities;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Insurance.Core.Services
 {
@@ -45,7 +46,7 @@ namespace Insurance.Core.Services
             if (productType.CanBeInsured)
             {
                 var ruleBasedCost = await GetRuleBasedInsuranceValueAsync(product);
-                var extraCost = await GetExtraCostInsuranceValueAsync(productType, productId);
+                var extraCost = await GetExtraCostInsuranceValueAsync(productType, productId, ruleBasedCost);
                 var surchargeCost = await _surchargeService.GetSurchargeByProductTypeIdAsync(product.ProductTypeId);
                 insuranceCost = ruleBasedCost + extraCost + surchargeCost;
 
@@ -53,6 +54,24 @@ namespace Insurance.Core.Services
             }
 
             return insuranceCost;
+        }
+
+        public async Task<float> CalculateProductsInsuranceValueAsync(int[] productIds)
+        {
+            _logger.LogInformation($"Calculating Product Insurance Values for Products with IDs {JsonSerializer.Serialize(productIds)}");
+
+            float insuranceCost = 0;
+            var products = await _productIntegration.GetAllProductsAsync();
+
+            if (products == null || products.Count == 0)
+                throw new Exception($"Could not fetch all Products");
+
+            var productTypes = await _productTypeIntegration.GetAllProductTypesAsync();
+
+            if (productTypes == null)
+                throw new Exception($"Could not fetch Product Types");
+
+            return await ProcessProductsInsuranceValueAsync(productIds, insuranceCost, products, productTypes);
         }
 
         private async Task<float> GetRuleBasedInsuranceValueAsync(ProductIntegrationDto productIntegrationDto)
@@ -70,18 +89,51 @@ namespace Insurance.Core.Services
             return value;
         }
 
-        private async Task<float> GetExtraCostInsuranceValueAsync(ProductTypeIntegrationDto productTypeIntegrationDto, int productId)
+        private async Task<float> GetExtraCostInsuranceValueAsync(ProductTypeIntegrationDto productTypeIntegrationDto, int productId, float ruleBasedCost)
         {
             _logger.LogInformation($"Calculating extra cost insurance for Product with ID {productId}");
 
             var insuranceExtraCost = await _insuranceUnitOfWork.Repository<InsuranceExtraCost>().FirstOrDefaultAsync(x =>
-            productTypeIntegrationDto.Name == x.ProductName && x.ApplyCostRangeRule);
+            productTypeIntegrationDto.Name == x.ProductName);
+
+            if (insuranceExtraCost != null && insuranceExtraCost.ApplyCostRangeRule && ruleBasedCost == 0)
+                return 0;
 
             var value = insuranceExtraCost == null ? 0 : insuranceExtraCost.ExtraCost;
 
             _logger.LogInformation($"Product Insurance Value {value} for Product with ID {productId}");
 
             return value;
+        }
+
+        private async Task<float> ProcessProductsInsuranceValueAsync(
+            int[] productIds, float insuranceCost, 
+            List<ProductIntegrationDto> products,
+            List<ProductTypeIntegrationDto> productTypes)
+        {
+            foreach (var productId in productIds)
+            {
+                var product = products.FirstOrDefault(x => x.Id == productId);
+                var productType = productTypes.FirstOrDefault(x => product != null && x.Id == product.ProductTypeId);
+                if (product != null && productType != null && productType.CanBeInsured)
+                {
+                    var ruleBasedCost = await GetRuleBasedInsuranceValueAsync(product);
+                    var extraCost = await GetExtraCostInsuranceValueAsync(productType, productId, ruleBasedCost);
+                    insuranceCost = ruleBasedCost + extraCost;
+
+                    _logger.LogInformation($"Total Insurance {insuranceCost} calculated for Product with ID {productId}");
+                }
+                else
+                {
+                    throw new Exception($"Invalid product in the provided list of products {productId}");
+                }
+            }
+
+            var uniqueProductTypeIds = products.Where(x => productIds.Contains(x.Id)).Select(x => x.ProductTypeId).Distinct().ToArray();
+            if (uniqueProductTypeIds.Any())
+                insuranceCost += await _surchargeService.GetSurchargeByProductTypeIdsAsync(uniqueProductTypeIds);
+
+            return insuranceCost;
         }
     }
 }
