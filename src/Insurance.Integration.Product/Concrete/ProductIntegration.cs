@@ -76,6 +76,8 @@ namespace Insurance.Integration.Product.Concrete
                 productIntegrationList = JsonSerializer.Deserialize<List<ProductIntegrationDto>?>(content);
                 if (productIntegrationList != null)
                     _memoryCache.Set(nameof(List<ProductIntegrationDto>), productIntegrationList);
+
+                return productIntegrationList;
             }
 
             var integrationErrorMessage = response != null ? await response.Content.ReadAsStringAsync() : string.Empty;

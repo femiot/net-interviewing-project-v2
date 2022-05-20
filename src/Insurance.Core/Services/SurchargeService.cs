@@ -31,13 +31,12 @@ namespace Insurance.Core.Services
 
             foreach (SurchargeRateDto surchargeRateDto in surchargeRateDtos)
             {
-                var existingRate = await _productTypeSurchargeCostRepository.FirstOrDefaultAsync(x => x.Id == surchargeRateDto.ProductTypeId);
+                var existingRate = await _productTypeSurchargeCostRepository.FirstOrDefaultAsync(x => x.ProductTypeId == surchargeRateDto.ProductTypeId);
                 if (existingRate != null)
                 {
                     _logger.LogInformation($"User with ID {userId} Updating surcharge rate for Product Type Id {surchargeRateDto.ProductTypeId} - Rate {surchargeRateDto.SurchargeRate}");
                     existingRate.Rate = surchargeRateDto.SurchargeRate;
                     _productTypeSurchargeCostRepository.Update(existingRate);
-                    await _insuranceUnitOfWork.SaveAsync();
                 }
                 else
                 {
@@ -48,9 +47,10 @@ namespace Insurance.Core.Services
                         ProductTypeId = surchargeRateDto.ProductTypeId
                     };
                     await _productTypeSurchargeCostRepository.InsertAsync(newSurchargeRate);
-                    await _insuranceUnitOfWork.SaveAsync();
                 }
             }
+
+            await _insuranceUnitOfWork.SaveAsync();
 
             return true;
         }
