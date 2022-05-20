@@ -77,16 +77,8 @@ namespace Insurance.Tests.Helpers
 
             _context.ProductTypeSurchargeCosts.Add(new ProductTypeSurchargeCost
             {
-                ProductTypeId = 1,
+                ProductTypeId = 124,
                 Rate = 1000,
-                DateCreated = DateTime.UtcNow.ToString("yyyy-MM-dd"),
-                CreatedByUserId = "System"
-            });
-
-            _context.ProductTypeSurchargeCosts.Add(new ProductTypeSurchargeCost
-            {
-                ProductTypeId = 2,
-                Rate = 200,
                 DateCreated = DateTime.UtcNow.ToString("yyyy-MM-dd"),
                 CreatedByUserId = "System"
             });

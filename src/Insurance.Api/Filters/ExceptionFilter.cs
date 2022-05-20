@@ -21,7 +21,7 @@ namespace Insurance.Api.Filters
         public void OnException(ExceptionContext context)
         {
             _logger.LogError(context.Exception, "System Error");
-
+            context.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
             var jsonResult = new JsonResult(new { Message = context.Exception.ToString() });
 
             if (!_env.IsDevelopment())
