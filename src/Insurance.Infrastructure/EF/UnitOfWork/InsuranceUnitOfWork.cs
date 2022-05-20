@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 #nullable disable
 
-namespace MicroFinanceSystem.Infrastructure.UnitOfWork
+namespace Insurance.Infrastructure.UnitOfWork
 {
     public class InsuranceUnitOfWork : IInsuranceUnitOfWork
     {

@@ -5,11 +5,11 @@ using Insurance.Core.Interfaces;
 using Insurance.Core.Services;
 using Insurance.Infrastructure.EF;
 using Insurance.Infrastructure.Repositories;
+using Insurance.Infrastructure.UnitOfWork;
 using Insurance.Integration.Product.Concrete;
 using Insurance.Shared.AppSettings;
 using Insurance.Shared.Constants;
 using Insurance.Shared.Validators;
-using MicroFinanceSystem.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -31,15 +31,20 @@ namespace Insurance.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options => 
+            ConfigureDefaultServices(services);
+            ConfigureDatabase(services);
+        }
+
+        protected void ConfigureDefaultServices(IServiceCollection services)
+        {
+            services.AddControllers(options =>
             {
                 options.Filters.Add<RequestFilter>();
                 options.Filters.Add<ExceptionFilter>();
-            })
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SurchargeUploadRequestValidator>());
+            }).AddApplicationPart(typeof(Startup).Assembly)
+            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SurchargeUploadRequestValidator>());
 
             services.AddHttpContextAccessor();
 
@@ -55,10 +60,6 @@ namespace Insurance.Api
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             services.Configure<AppConfiguration>(options => Configuration.GetSection(nameof(AppConfiguration)).Bind(options));
-
-            var databaseConnectionString = Configuration.GetConnectionString("database");
-            services.AddDbContext<InsuranceContext>(options => options.UseSqlite(databaseConnectionString));
-            services.AddHealthChecks().AddSqlite(databaseConnectionString);
 
             services.AddHttpClient(IntegrationConstants.ProductDataApi, httpClient =>
             {
@@ -87,8 +88,15 @@ namespace Insurance.Api
             });
         }
 
+        protected virtual void ConfigureDatabase(IServiceCollection services)
+        {
+            var databaseConnectionString = Configuration.GetConnectionString("database");
+            services.AddDbContext<InsuranceContext>(options => options.UseSqlite(databaseConnectionString));
+            services.AddHealthChecks().AddSqlite(databaseConnectionString);
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -107,11 +115,7 @@ namespace Insurance.Api
 
             app.UseMiddleware<LoggerMiddleware>();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHealthChecks("/alive");
-                endpoints.MapControllers();
-            });
+            ConfigureEndpoints(app);
 
             try
             {
@@ -122,6 +126,15 @@ namespace Insurance.Api
                 var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
                 logger.LogError(ex, "An error occurred with the DB migration.");
             }
+        }
+
+        protected virtual void ConfigureEndpoints(IApplicationBuilder app)
+        {
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/alive");
+                endpoints.MapControllers();
+            });
         }
 
         private static void UpdateDatabases(IApplicationBuilder app)
