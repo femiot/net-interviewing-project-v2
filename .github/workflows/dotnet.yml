@@ -2,34 +2,33 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --collect:"XPlat Code Coverage" --no-build --verbosity normal
-    - uses: 5monkeys/cobertura-action@master
-      with:
-        path: coverage/*.xml
-        fail_below_threshold: true
-        show_class_names: true
-        skip_covered: false
-        show_line: true
-        show_missing: true
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        minimum_coverage: 75
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --collect:"XPlat Code Coverage" --no-build --verbosity normal
+      - uses: 5monkeys/cobertura-action@master
+        with:
+          path: ./tests/Insurance.Tests/TestResults/*/coverage.cobertura.xml
+          fail_below_threshold: true
+          show_class_names: true
+          skip_covered: false
+          show_line: true
+          show_missing: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 75

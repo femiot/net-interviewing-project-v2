@@ -6,13 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using System.Linq;
 
 namespace Insurance.Tests.Controllers
 {
@@ -33,14 +33,9 @@ namespace Insurance.Tests.Controllers
         public async Task UploadSurchargeRates_Given_A_Valid_File_And_UserId_Should_Upload_Successfully(string method)
         {
             var userId = Guid.NewGuid().ToString();
-            var content = "ProductTypeId| SurchargeRate" + Environment.NewLine +
-                "32 | 2300,123" + Environment.NewLine +
-                "33 | 500,45" + Environment.NewLine +
-                "21 | 1000,34";
             var fileName = "test.csv";
-            var bytes = Encoding.UTF8.GetBytes(content);
-            var stream = new MemoryStream(bytes);
-            IFormFile file = new FormFile(stream, 0, bytes.Length, "data", fileName);
+
+            var file = fileName.GetTestFormFile();
 
             var fileContent = new StreamContent(file.OpenReadStream())
             {
@@ -78,14 +73,9 @@ namespace Insurance.Tests.Controllers
         public async Task UploadSurchargeRates_Given_An_Invalid_File_And_UserId_Should_Return_Validation_Message(string method)
         {
             var userId = Guid.Empty.ToString();
-            var content = "ProductTypeId| SurchargeRate" + Environment.NewLine +
-                "32 | 2300,123" + Environment.NewLine +
-                "33 | 500,45" + Environment.NewLine +
-                "21 | 1000,34";
             var fileName = "test.txt";
-            var bytes = Encoding.UTF8.GetBytes(content);
-            var stream = new MemoryStream(bytes);
-            IFormFile file = new FormFile(stream, 0, bytes.Length, "data", fileName);
+
+            var file = fileName.GetTestFormFile();
 
             var fileContent = new StreamContent(file.OpenReadStream())
             {
@@ -109,6 +99,42 @@ namespace Insurance.Tests.Controllers
             Assert.NotNull(responseContent);
             Assert.True(responseContent?.Contains("UserId"));
             Assert.True(responseContent?.Contains("Please provide User Id"));
+            Assert.True(responseContent?.Contains("SurchargeFile"));
+            Assert.True(responseContent?.Contains("Please upload a valid csv file (1 GB size max)"));
+        }
+
+        [Theory]
+        [InlineData("POST", "test.csv")]
+        [InlineData("POST", null)]
+        public async Task UploadSurchargeRates_Given_An_Empty_File_Should_Return_Validation_Message(string method, string fileName)
+        {
+            var userId = Guid.NewGuid().ToString();
+            var content = "";
+            var bytes = Encoding.UTF8.GetBytes(content);
+            var stream = new MemoryStream(bytes);
+            IFormFile file = new FormFile(stream, 0, bytes.Length, "data", fileName);
+
+            var fileContent = new StreamContent(file.OpenReadStream())
+            {
+                Headers =
+                {
+                    ContentLength = file.Length,
+                    ContentType = new MediaTypeHeaderValue("text/plain")
+                }
+            };
+
+            var formDataContent = new MultipartFormDataContent();
+            if (!string.IsNullOrWhiteSpace(fileName))
+                formDataContent.Add(fileContent, "SurchargeFile", file.FileName);
+            formDataContent.Add(new StringContent(userId), "UserId");
+
+            var request = new HttpRequestMessage(new HttpMethod(method), "/api/surcharge/UploadSurchargeRates");
+            request.Content = formDataContent;
+
+            //Act
+            var response = await Client.SendAsync(request);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Assert.NotNull(responseContent);
             Assert.True(responseContent?.Contains("SurchargeFile"));
             Assert.True(responseContent?.Contains("Please upload a valid csv file (1 GB size max)"));
         }

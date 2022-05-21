@@ -10,17 +10,17 @@ namespace Insurance.Api.Middlewares
 {
     public class ExceptionHandlerMiddleware
     {
-        private readonly RequestDelegate _requestDelegate;
-        public ExceptionHandlerMiddleware(RequestDelegate requestDelegate)
+        private readonly RequestDelegate _next;
+        public ExceptionHandlerMiddleware(RequestDelegate next)
         {
-            _requestDelegate = requestDelegate;
+            _next = next;
         }
 
-        public async Task Invoke(HttpContext context, ILogger<ExceptionHandlerMiddleware> logger, IWebHostEnvironment env)
+        public async Task InvokeAsync(HttpContext context, ILogger<ExceptionHandlerMiddleware> logger, IWebHostEnvironment env)
         {
             try
             {
-                await _requestDelegate(context);
+                await _next(context);
             }
             catch (Exception ex)
             {
