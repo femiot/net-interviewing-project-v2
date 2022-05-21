@@ -24,7 +24,7 @@ Assumptions:
 ##  1.1 Solution Architecture:
 The solution consists of multiple layers to ensure seperation of concern, high cohesion and low coupling. The clean architecture is adopted to ensure that code can be tested properly, easily scaled and maintained.
 
-[![Clean Architecture]([https://github.com/femiot/net-interviewing-project-v2/blob/master/logo.png](https://github.com/femiot/net-interviewing-project-v2/blob/master/clean_architecture.drawio.svg))]()
+[![Clean Architecture](https://github.com/femiot/net-interviewing-project-v2/blob/master/clean_architecture.drawio.svg)]()
 
 - Interface Layer contains the API that exposes the endpoints that can be consumed. This application is the entry point into the system. It consists of Startups, Controllers, Middlewares (logger, exception, correlation handlers), Filters (action and expection handlers). 
 - Domain Layer contains the core project where the business rules are implemented. This layer only depends on the shared layer and nothing else. This is to ensure that other layers can be modified without any negative effects on the domain. This layer rely on abstraction and the use of interface with other layers.
