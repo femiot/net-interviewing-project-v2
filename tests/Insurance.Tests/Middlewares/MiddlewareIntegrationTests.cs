@@ -8,7 +8,8 @@ using Xunit;
 
 namespace Insurance.Tests.Middlewares
 {
-    public class MiddlewareIntegrationTests : IClassFixture<TestFixture<TestStartup>>
+    [Collection("Tests collection")]
+    public class MiddlewareIntegrationTests
     {
         public MiddlewareIntegrationTests(TestFixture<TestStartup> fixture)
         {

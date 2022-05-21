@@ -10,7 +10,8 @@ using Xunit;
 
 namespace Insurance.Tests.Controllers
 {
-    public class InsuranceIntegrationTests : IClassFixture<TestFixture<TestStartup>>
+    [Collection("Tests collection")]
+    public class InsuranceIntegrationTests
     {
         public InsuranceIntegrationTests(TestFixture<TestStartup> fixture)
         {
