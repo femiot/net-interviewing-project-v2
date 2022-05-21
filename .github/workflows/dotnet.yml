@@ -24,7 +24,6 @@ jobs:
     - name: Test
       run: dotnet test --collect:"XPlat Code Coverage" --no-build --verbosity normal
     - uses: 5monkeys/cobertura-action@master
-    - name: Code coverage checks
       with:
         path: coverage/*.xml
         fail_below_threshold: true
