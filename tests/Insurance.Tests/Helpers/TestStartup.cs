@@ -30,6 +30,7 @@ namespace Insurance.Tests.Helpers
                        options.UseInternalServiceProvider(services.BuildServiceProvider());
                    });
             services.AddHealthChecks();
+            services.AddMemoryCache();
             services.AddTransient<TestDataInitializer>();
         }
 
