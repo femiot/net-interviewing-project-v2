@@ -30,7 +30,7 @@ namespace Insurance.Tests.Controllers
 
         [Theory]
         [InlineData("POST")]
-        public async Task Should_Upload_Single_File(string method)
+        public async Task UploadSurchargeRates_Given_A_Valid_File_And_UserId_Should_Upload_Successfully(string method)
         {
             var userId = Guid.NewGuid().ToString();
             var content = "ProductTypeId| SurchargeRate" + Environment.NewLine +
@@ -44,7 +44,7 @@ namespace Insurance.Tests.Controllers
 
             var fileContent = new StreamContent(file.OpenReadStream())
             {
-                Headers = 
+                Headers =
                 {
                     ContentLength = file.Length,
                     ContentType = new MediaTypeHeaderValue("text/csv")
@@ -52,7 +52,7 @@ namespace Insurance.Tests.Controllers
             };
 
             var formDataContent = new MultipartFormDataContent();
-            formDataContent.Add(fileContent, "SurchargeFile", file.FileName);      
+            formDataContent.Add(fileContent, "SurchargeFile", file.FileName);
             formDataContent.Add(new StringContent(userId), "UserId");
 
             var request = new HttpRequestMessage(new HttpMethod(method), "/api/surcharge/UploadSurchargeRates");
@@ -72,5 +72,46 @@ namespace Insurance.Tests.Controllers
             Assert.True(surcharges.Count() == 3);
 
         }
+
+        [Theory]
+        [InlineData("POST")]
+        public async Task UploadSurchargeRates_Given_An_Invalid_File_And_UserId_Should_Return_Validation_Message(string method)
+        {
+            var userId = Guid.Empty.ToString();
+            var content = "ProductTypeId| SurchargeRate" + Environment.NewLine +
+                "32 | 2300,123" + Environment.NewLine +
+                "33 | 500,45" + Environment.NewLine +
+                "21 | 1000,34";
+            var fileName = "test.txt";
+            var bytes = Encoding.UTF8.GetBytes(content);
+            var stream = new MemoryStream(bytes);
+            IFormFile file = new FormFile(stream, 0, bytes.Length, "data", fileName);
+
+            var fileContent = new StreamContent(file.OpenReadStream())
+            {
+                Headers =
+                {
+                    ContentLength = file.Length,
+                    ContentType = new MediaTypeHeaderValue("text/plain")
+                }
+            };
+
+            var formDataContent = new MultipartFormDataContent();
+            formDataContent.Add(fileContent, "SurchargeFile", file.FileName);
+            formDataContent.Add(new StringContent(userId), "UserId");
+
+            var request = new HttpRequestMessage(new HttpMethod(method), "/api/surcharge/UploadSurchargeRates");
+            request.Content = formDataContent;
+
+            //Act
+            var response = await Client.SendAsync(request);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Assert.NotNull(responseContent);
+            Assert.True(responseContent?.Contains("UserId"));
+            Assert.True(responseContent?.Contains("Please provide User Id"));
+            Assert.True(responseContent?.Contains("SurchargeFile"));
+            Assert.True(responseContent?.Contains("Please upload a valid csv file (1 GB size max)"));
+        }
+
     }
 }
