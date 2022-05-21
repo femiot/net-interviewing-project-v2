@@ -23,11 +23,14 @@ namespace Insurance.Tests.Helpers
                   .Build();
             _host.Start();
 
+            Services = _host.Services;
+
             Client = new HttpClient();
             Client.BaseAddress = new Uri("http://localhost:5002");
         }
 
         public HttpClient Client { get; }
+        public IServiceProvider Services { get; }
 
         public void Dispose()
         {
