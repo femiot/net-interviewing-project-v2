@@ -32,7 +32,6 @@ namespace Insurance.Integration.Product.Concrete
             _correlationId = contextAccessor.HttpContext.Request
                 .Headers[appConfigurationOptions.Value.CorrelationKey].ToString();
             _httpClient.DefaultRequestHeaders.Add(appConfigurationOptions.Value.CorrelationKey, _correlationId);
-            _httpClient.BaseAddress = new Uri(appConfigurationOptions.Value.ProductIntegrationServiceUrl);
         }
 
         public async Task<ProductTypeIntegrationDto?> GetProductTypeByIdAsync(int productTypeId)

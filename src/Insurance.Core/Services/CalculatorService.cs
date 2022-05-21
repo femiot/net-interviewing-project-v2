@@ -89,7 +89,8 @@ namespace Insurance.Core.Services
             return value;
         }
 
-        private async Task<float> GetExtraCostInsuranceValueAsync(ProductTypeIntegrationDto productTypeIntegrationDto, int productId, float ruleBasedCost)
+        public async Task<float> GetExtraCostInsuranceValueAsync(ProductTypeIntegrationDto productTypeIntegrationDto, 
+            int productId, float ruleBasedCost)
         {
             _logger.LogInformation($"Calculating extra cost insurance for Product with ID {productId}");
 

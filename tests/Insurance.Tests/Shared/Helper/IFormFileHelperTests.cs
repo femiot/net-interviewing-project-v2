@@ -2,7 +2,7 @@
 using Insurance.Tests.Helpers;
 using Xunit;
 
-namespace Insurance.Tests.HelperMethods
+namespace Insurance.Tests.Helper
 {
     public class IFormFileHelperTests
     {
