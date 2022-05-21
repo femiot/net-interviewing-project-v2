@@ -29,5 +29,8 @@ jobs:
         path: coverage/*.xml
         fail_below_threshold: true
         show_class_names: true
+        skip_covered: false
+        show_line: true
+        show_missing: true
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         minimum_coverage: 75
