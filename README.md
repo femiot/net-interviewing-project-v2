@@ -4,6 +4,20 @@
 ## _Solution Documentation_
 ![main workflow](https://github.com/femiot/net-interviewing-project-v2/actions/workflows/dotnet.yml/badge.svg)
 
+Table of contents
+=================
+
+<!--ts-->
+   * [1. Technical Details on the API](#1-technical-details-on-the-api)
+      * [1.1 Solution Architecture](#11-solution-architecture)
+      * [1.2 Design Patterns](#12-design-patterns)
+      * [1.3 Monitoring](#13--monitoring)
+      * [1.4 Exception Handling](#14-exception-handling)
+      * [1.5 Data Access](#15-data-access)
+      * [1.6 Testing](#16-testing)
+      * [1.7 CI/CD](#17-cicd)
+<!--te-->
+
 Insurance API is a service for calculating insurance costs on single product and multiple products. There are set rules based on the product, product type and if the product can be insured. The rules are stored in a sqlite database to avoid hardcoded values in the solution:
 
 - Cost range rule will check if the product sales cost is within a certain range and add a cost to the insurance 
@@ -69,6 +83,8 @@ Another thing to bear in mind is that the correlation Id is sent to external API
 ```
 Log directory path can be found: `./src/logs`. In a scenario where this will be hosted on a cloud platform for example `AWS`, the app settings will be configured to use cloudwatch and all the logs will be provided on the cloud platform instead of the directory specified above.
 
+In terms of the health checks, there is an endpoint configured to check if the API is running. This can be configured on a load balancer or kubernetes cluster to ensure that the health of the api is monitored at all times. 
+
 ## 1.4 Exception Handling
 There are two exception handlers in the solution namely:
 1. `ExceptionFilter.cs`
@@ -78,7 +94,7 @@ The exception filter is mainly to handle any exceptions that may occur based on 
 
 When in development mode. All exceptions are returned but in a production environment, only friendly message will be shown to the end user and the real error will be logged for tracing purpose.
 
-## 1.4 Data Access
+## 1.5 Data Access
 The application use Sqlite but ideally should be connecting to a more optimal SQL server such MSSQL Server. All cost such as range cost, extra costs, surcharge are stored in the sqlite database. The database file can be found with the API project `.\src\Insurance.Api` name of the db file should be `InsuranceDatabase.db`.
 
 The application uses a code first approach. There are migration scripts that are configured on first load to seed the database. In a scenario where any of the entity models is changed, the migration script should be executed within the solution to create new migration that would update the database on the new run. Here is the command to invoke at the root of the solution:
@@ -104,11 +120,11 @@ private static void UpdateDatabases(IApplicationBuilder app)
     }
 }
 ```
-## 1.5 Testing
+## 1.6 Testing
 The solution consists of both Integration and Unit tests. The integration tests are mainly geared towards the behaviour of the system based on input provided. 
 Unit tests are used to compliment the integration tests in cases where there are no code coverage.
 
-## 1.6 CI/CD
+## 1.7 CI/CD
 There is a build pipeline to check the code coverage and ensure that it is at least 75%. An example can be found here: https://github.com/femiot/net-interviewing-project-v2/runs/6536982844?check_suite_focus=true
 
 Please ensure to always update the document as the system evolves. 
