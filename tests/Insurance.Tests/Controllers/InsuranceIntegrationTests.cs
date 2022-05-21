@@ -116,9 +116,35 @@ namespace Insurance.Tests.Controllers
 
             // Act
             var response = await Client.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
 
             // Assert
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.Equal(
+                expected: HttpStatusCode.InternalServerError, 
+                actual: response.StatusCode);
+            Assert.True(content?.Contains("System.Exception: Could not fetch Product by ID -725435"));
+        }
+
+        [Theory]
+        [InlineData("POST")]
+        public async Task CalculateInsurance_GivenInvalidProductTypeId_ShouldReturnInternalServerError(string method)
+        {
+            // Arrange
+            var request = new HttpRequestMessage(new HttpMethod(method), "/api/insurance/product");
+            request.Content = new StringContent(JsonConvert.SerializeObject(new InsuranceRequest
+            {
+                ProductId = 5555,
+            }), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await Client.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Equal(
+                expected: HttpStatusCode.InternalServerError,
+                actual: response.StatusCode);
+            Assert.True(content?.Contains("System.Exception: Could not fetch Product Type by ID 5555"));
         }
 
         [Theory]
@@ -138,7 +164,9 @@ namespace Insurance.Tests.Controllers
             var response = await Client.SendAsync(request);
 
             // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(
+                expected: HttpStatusCode.OK,
+                actual: response.StatusCode);
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<InsuranceProductsResponse>(content);
 

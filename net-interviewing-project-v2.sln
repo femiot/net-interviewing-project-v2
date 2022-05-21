@@ -15,19 +15,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Interface Layer", "1. In
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Domain Layer", "2. Domain Layer", "{9B1A3585-C6D8-4427-ACC1-75475D8B275B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Infrastructure Layer", "3. Infrastructure Layer", "{4F6D0617-6B42-4B2C-9FA8-9782E64FD68F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Persistence Layer", "3. Persistence Layer", "{4F6D0617-6B42-4B2C-9FA8-9782E64FD68F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Integration Layer", "4. Integration Layer", "{74FFA251-E1F6-435D-8BAC-61FF4E820127}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Shared Layer", "5. Shared Layer", "{7FDE590D-8635-40AA-A457-978177EE72FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insurance.Shared", "src\Insurance.Shared\Insurance.Shared.csproj", "{A9543126-1961-43E6-9858-8B1AAFC5FB37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insurance.Shared", "src\Insurance.Shared\Insurance.Shared.csproj", "{A9543126-1961-43E6-9858-8B1AAFC5FB37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insurance.Integration.Product", "src\Insurance.Integration.Product\Insurance.Integration.Product.csproj", "{A3F006C8-F313-487D-A815-3F69B89E3844}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insurance.Integration.Product", "src\Insurance.Integration.Product\Insurance.Integration.Product.csproj", "{A3F006C8-F313-487D-A815-3F69B89E3844}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insurance.Infrastructure", "src\Insurance.Infrastructure\Insurance.Infrastructure.csproj", "{8A8A00A4-798B-40F6-90C6-4B285EE0FB93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insurance.Infrastructure", "src\Insurance.Infrastructure\Insurance.Infrastructure.csproj", "{8A8A00A4-798B-40F6-90C6-4B285EE0FB93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insurance.Core", "src\Insurance.Core\Insurance.Core.csproj", "{575CA5E1-A3EE-4F2B-A151-C38067B9EE89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insurance.Core", "src\Insurance.Core\Insurance.Core.csproj", "{575CA5E1-A3EE-4F2B-A151-C38067B9EE89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

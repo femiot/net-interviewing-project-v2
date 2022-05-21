@@ -17,8 +17,10 @@ namespace Insurance.Tests.Helpers
                     builder.AddJsonFile("appsettings.json");
                 })
                   .ConfigureWebHostDefaults(
-                       b => b.UseUrls("http://localhost:5002")
-                             .UseStartup<TestStartup>()
+                       b => b
+                       .UseEnvironment("Development")
+                       .UseUrls("http://localhost:5000")
+                       .UseStartup<TestStartup>()
                    )
                   .Build();
             _host.Start();
@@ -26,7 +28,7 @@ namespace Insurance.Tests.Helpers
             Services = _host.Services;
 
             Client = new HttpClient();
-            Client.BaseAddress = new Uri("http://localhost:5002");
+            Client.BaseAddress = new Uri("http://localhost:5000");
         }
 
         public HttpClient Client { get; }
