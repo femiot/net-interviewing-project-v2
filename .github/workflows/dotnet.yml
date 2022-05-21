@@ -22,4 +22,9 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --collect:"XPlat Code Coverage" --no-build --verbosity normal
+    - uses: 5monkeys/cobertura-action@master
+      with:
+        path: coverage/*.xml
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        minimum_coverage: 75
