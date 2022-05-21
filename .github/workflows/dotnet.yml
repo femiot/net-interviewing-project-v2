@@ -25,7 +25,7 @@ jobs:
       run: dotnet test --collect:"XPlat Code Coverage" --no-build --verbosity normal
     - uses: 5monkeys/cobertura-action@master
       with:
-        path: TestResults/*/*.xml
+        path: '$(System.DefaultWorkingDirectory)/**/coverage.cobertura.xml'
         fail_below_threshold: true
         show_class_names: true
         skip_covered: false
