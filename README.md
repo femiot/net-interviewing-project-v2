@@ -124,7 +124,7 @@ The solution consists of both Integration and Unit tests. The integration tests 
 Unit tests are used to compliment the integration tests in cases where there is no code coverage.
 
 ## 1.7 CI/CD
-There is a build pipeline to check the code coverage and ensure that it is at least 75%. An example can be found here: https://github.com/femiot/net-interviewing-project-v2/runs/6536982844?check_suite_focus=true
+There is a build pipeline to check the code coverage and ensure that it is at least 75%. An example can be found here: [https://github.com/femiot/net-interviewing-project-v2/runs/6536982844?check_suite_focus=true](https://github.com/femiot/net-interviewing-project-v2/runs/6539148620?check_suite_focus=true)
 
 Please ensure to always update the document as the system evolves. 
 ✨Happy coding ✨
