@@ -1,4 +1,6 @@
-﻿namespace Insurance.Core.Interfaces.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Insurance.Core.Interfaces.Entities
 {
     public class BaseEntity
     {
@@ -7,5 +9,8 @@
         public string CreatedByUserId { get; set; } = null!;
         public string? DateModified { get; set; } 
         public string? LastUpdatedByUserId { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

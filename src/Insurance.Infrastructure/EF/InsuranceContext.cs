@@ -18,6 +18,8 @@ namespace Insurance.Infrastructure.EF
             modelBuilder.Entity<CostRangeRule>().ToTable("CostRangeRules");
             modelBuilder.Entity<InsuranceExtraCost>().ToTable("InsuranceExtraCosts");
             modelBuilder.Entity<ProductTypeSurchargeCost>().ToTable("ProductTypeSurchargeCosts");
+
+            modelBuilder.Entity<ProductTypeSurchargeCost>().Property(a => a.RowVersion).IsRowVersion();
         }
     }
 }
