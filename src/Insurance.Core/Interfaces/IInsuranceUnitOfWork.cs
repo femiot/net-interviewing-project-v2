@@ -1,4 +1,5 @@
-﻿using Insurance.Shared.Entities;
+﻿
+using Insurance.Core.Interfaces.Entities;
 
 namespace Insurance.Core.Interfaces
 {

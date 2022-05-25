@@ -1,4 +1,4 @@
-﻿using Insurance.Shared.Entities;
+﻿using Insurance.Core.Interfaces.Entities;
 using System.Linq.Expressions;
 
 namespace Insurance.Core.Interfaces

@@ -1,5 +1,5 @@
 ﻿using Insurance.Core.Interfaces;
-using Insurance.Shared.Entities;
+using Insurance.Core.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

@@ -1,8 +1,8 @@
 ﻿using Insurance.Core.Interfaces;
+using Insurance.Core.Interfaces.Entities;
 using Insurance.Infrastructure.EF;
 using Insurance.Infrastructure.EF.Extensions;
 using Insurance.Infrastructure.Repositories;
-using Insurance.Shared.Entities;
 using Microsoft.AspNetCore.Http;
 
 #nullable disable

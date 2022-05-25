@@ -1,5 +1,5 @@
-﻿using Insurance.Infrastructure.EF;
-using Insurance.Shared.Entities;
+﻿using Insurance.Core.Interfaces.Entities;
+using Insurance.Infrastructure.EF;
 using System;
 
 namespace Insurance.Tests.Helpers

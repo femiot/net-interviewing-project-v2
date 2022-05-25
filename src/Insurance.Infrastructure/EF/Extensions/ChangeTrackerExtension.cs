@@ -1,5 +1,5 @@
-﻿using Insurance.Shared.Constants;
-using Insurance.Shared.Entities;
+﻿using Insurance.Core.Interfaces.Entities;
+using Insurance.Shared.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

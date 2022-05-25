@@ -1,7 +1,7 @@
 ﻿using Insurance.Core.Interfaces;
+using Insurance.Core.Interfaces.Entities;
 using Insurance.Core.Services;
 using Insurance.Shared.DTOs;
-using Insurance.Shared.Entities;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;

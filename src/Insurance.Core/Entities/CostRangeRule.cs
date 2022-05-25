@@ -1,4 +1,4 @@
-﻿namespace Insurance.Shared.Entities
+﻿namespace Insurance.Core.Interfaces.Entities
 {
     public class CostRangeRule : BaseEntity
     {

@@ -1,4 +1,4 @@
-﻿using Insurance.Shared.Entities;
+﻿using Insurance.Core.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Insurance.Infrastructure.EF

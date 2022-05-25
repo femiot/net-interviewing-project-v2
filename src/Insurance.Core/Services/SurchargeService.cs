@@ -1,8 +1,8 @@
 ﻿using Dawn;
 using Insurance.Core.Interfaces;
+using Insurance.Core.Interfaces.Entities;
 using Insurance.Shared.Constants;
 using Insurance.Shared.DTOs;
-using Insurance.Shared.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
